@@ -8,12 +8,12 @@ Get currency rates from Central Bank of Russia
 package main
 
 import (
-	cbr "cbr-currency-go"
+	"gopkg.in/kolomiichenko/cbr-currency-go.v1"
 	"log"
 )
 
 func main() {
-  cbr.updateCurrency() // force update
+	cbr.updateCurrency() // force update
 	log.Println(cbr.CurrencyRates["USD"])
 }
 ```

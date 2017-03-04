@@ -35,6 +35,7 @@ type currencyRate struct {
 	Value   float64
 }
 
+// CurrencyRates Global map with rates
 var CurrencyRates map[string]currencyRate
 
 func init() {
@@ -48,11 +49,11 @@ func doEvery(d time.Duration, f func()) {
 	}
 }
 
+// UpdateCurrencyRates To sync rates from CBR server
 func UpdateCurrencyRates() {
-	log.Println("Updating CBR rates...")
 	resp, err := http.Get("http://www.cbr.ru/scripts/XML_daily.asp")
 	if err != nil {
-		log.Fatalf("Error of get currency: %v", err.Error())
+		log.Printf("Error of get currency: %v", err.Error())
 	}
 
 	var data xmlResult

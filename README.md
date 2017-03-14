@@ -9,12 +9,13 @@ package main
 
 import (
 	"gopkg.in/kolomiichenko/cbr-currency-go.v1"
-	"log"
+	"fmt"
 )
 
 func main() {
 	cbr.updateCurrency() // force update
-	log.Println(cbr.CurrencyRates["USD"])
+	rates := cbr.GetCurrencyRates()
+	fmt.Printf("%+v\n", rates["USD"])
 }
 ```
 

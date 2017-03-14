@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"golang.org/x/net/html/charset"
@@ -35,8 +36,10 @@ type currencyRate struct {
 	Value   float64
 }
 
-// CurrencyRates Global map with rates
-var CurrencyRates map[string]currencyRate
+var (
+	currencyRates map[string]currencyRate
+	mu            sync.Mutex
+)
 
 func init() {
 	UpdateCurrencyRates()
@@ -47,6 +50,11 @@ func doEvery(d time.Duration, f func()) {
 	for range time.Tick(d) {
 		f()
 	}
+}
+
+// GetCurrencyRates Get map of rates
+func GetCurrencyRates() map[string]currencyRate {
+	return currencyRates
 }
 
 // UpdateCurrencyRates To sync rates from CBR server
@@ -66,12 +74,14 @@ func UpdateCurrencyRates() {
 		return
 	}
 
-	CurrencyRates = make(map[string]currencyRate)
+	mu.Lock()
+
+	currencyRates = make(map[string]currencyRate)
 
 	for _, el := range data.Valute {
 		value, _ := strconv.ParseFloat(strings.Replace(el.Value, ",", ".", -1), 64)
 
-		CurrencyRates[el.CharCode] = currencyRate{
+		currencyRates[el.CharCode] = currencyRate{
 			ID:      el.ID,
 			NumCode: el.NumCode,
 			ISOCode: el.CharCode,
@@ -79,4 +89,6 @@ func UpdateCurrencyRates() {
 			Value:   value / el.Nominal,
 		}
 	}
+
+	defer mu.Unlock()
 }

@@ -62,6 +62,7 @@ func UpdateCurrencyRates() {
 	resp, err := http.Get("http://www.cbr.ru/scripts/XML_daily.asp")
 	if err != nil {
 		log.Printf("Error of get currency: %v", err.Error())
+		return
 	}
 
 	var data xmlResult

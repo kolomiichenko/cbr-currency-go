@@ -61,7 +61,10 @@ func GetCurrencyRates() map[string]currencyRate {
 // original URL (http://www.cbr.ru/scripts/XML_daily.asp) changed
 // to unofficial mirror (https://www.cbr-xml-daily.ru/daily.xml)
 func UpdateCurrencyRates() {
-	resp, err := http.Get("https://www.cbr-xml-daily.ru/daily.xml")
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+	resp, err := client.Get("https://www.cbr-xml-daily.ru/daily.xml")
 	if err != nil {
 		log.Printf("Error of get currency: %v", err.Error())
 		return
